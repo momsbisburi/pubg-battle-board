@@ -39,7 +39,7 @@ const PlayerStatusIndicator = ({ status }: PlayerStatusIndicatorProps) => {
 
   return (
     <div 
-      className={`w-6 h-3 rounded-full ${getStatusClasses()} transition-all duration-300`}
+      className={`w-3 h-6 rounded-full ${getStatusClasses()} transition-all duration-300`}
       aria-label={`Player ${status}`}
     />
   );

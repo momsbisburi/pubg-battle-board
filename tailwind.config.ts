@@ -47,6 +47,14 @@ export default {
           DEFAULT: "hsl(var(--card))",
           foreground: "hsl(var(--card-foreground))",
         },
+        gaming: {
+          alive: "hsl(var(--alive))",
+          dead: "hsl(var(--dead))",
+          missing: "hsl(var(--missing))",
+          gold: "hsl(var(--rank-gold))",
+          silver: "hsl(var(--rank-silver))",
+          bronze: "hsl(var(--rank-bronze))",
+        },
         sidebar: {
           DEFAULT: "hsl(var(--sidebar-background))",
           foreground: "hsl(var(--sidebar-foreground))",

@@ -29,7 +29,7 @@ const PlayerStatusIndicator = ({ status }: PlayerStatusIndicatorProps) => {
   const getStatusClasses = () => {
     switch (status) {
       case 'alive':
-        return 'bg-gaming-alive';
+        return 'bg-gaming-alive animate-pulse-glow';
       case 'dead':
         return 'bg-gaming-dead';
       case 'missing':
@@ -39,7 +39,7 @@ const PlayerStatusIndicator = ({ status }: PlayerStatusIndicatorProps) => {
 
   return (
     <div 
-      className={`w-3 h-3 rounded-full ${getStatusClasses()}`}
+      className={`w-6 h-3 rounded-full ${getStatusClasses()} transition-all duration-300`}
       aria-label={`Player ${status}`}
     />
   );
@@ -162,112 +162,119 @@ const PubgRanking = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-background to-secondary p-8">
-      <div className="max-w-6xl mx-auto">
-        {/* Header */}
-        <div className="text-center mb-8">
-          <h1 className="text-6xl font-black text-primary mb-2 tracking-wider">
+    <div className="min-h-screen bg-gradient-to-br from-background via-secondary to-background p-4">
+      <div className="max-w-4xl mx-auto">
+        {/* Streaming Widget Header */}
+        <div className="text-center mb-6 animate-fade-in">
+          <h1 className="text-5xl font-black text-primary mb-3 tracking-widest drop-shadow-lg">
             LIVE RANKING
           </h1>
-          <div className="w-32 h-1 bg-primary mx-auto"></div>
+          <div className="w-24 h-1 bg-gradient-to-r from-primary to-gaming-alive mx-auto rounded-full animate-pulse-glow"></div>
         </div>
 
-        {/* Ranking Table */}
-        <Card className="bg-card/80 backdrop-blur-sm border-2 border-primary/20 shadow-2xl">
-          {/* Table Header */}
-          <div className="grid grid-cols-6 gap-4 p-6 bg-primary/10 border-b border-primary/20">
-            <div className="text-center">
-              <h2 className="text-xl font-black text-foreground tracking-wider">RANK</h2>
+        {/* Compact Streaming Widget */}
+        <div className="bg-card/95 backdrop-blur-md border border-primary/30 rounded-2xl shadow-2xl overflow-hidden">
+          {/* Widget Header */}
+          <div className="bg-gradient-to-r from-primary/20 to-gaming-alive/20 p-4 border-b border-primary/20">
+            <div className="grid grid-cols-6 gap-3 text-center">
+              <div className="text-sm font-black text-foreground">RANK</div>
+              <div className="text-sm font-black text-foreground">TEAM</div>
+              <div className="text-sm font-black text-foreground">PTS</div>
+              <div className="text-sm font-black text-foreground">STATUS</div>
+              <div className="text-sm font-black text-foreground">ELIMS</div>
+              <div className="text-sm font-black text-foreground">ALIVE</div>
             </div>
-            <div className="text-center">
-              <h2 className="text-xl font-black text-foreground tracking-wider">TEAM</h2>
-            </div>
-            <div className="text-center">
-              <h2 className="text-xl font-black text-foreground tracking-wider">PTS</h2>
-            </div>
-            <div className="text-center">
-              <h2 className="text-xl font-black text-foreground tracking-wider">ALIVE</h2>
-            </div>
-            <div className="text-center">
-              <h2 className="text-xl font-black text-foreground tracking-wider">ELIMS</h2>
-            </div>
-            <div></div>
           </div>
 
-          {/* Team Rows */}
-          {teams.map((team, index) => (
-            <div 
-              key={team.name}
-              className={`grid grid-cols-6 gap-4 p-6 border-b border-primary/10 hover:bg-primary/5 transition-colors ${
-                index % 2 === 0 ? 'bg-muted/20' : 'bg-transparent'
-              }`}
-            >
-              {/* Rank */}
-              <div className="flex items-center justify-center">
-                <span className={`text-4xl ${getRankStyle(team.rank)}`}>
-                  #{team.rank}
-                </span>
-              </div>
+          {/* Team Rows - Compact for Streaming */}
+          <div className="max-h-96 overflow-y-auto">
+            {teams.map((team, index) => (
+              <div 
+                key={team.name}
+                className={`grid grid-cols-6 gap-3 p-3 border-b border-primary/10 hover:bg-primary/5 transition-all duration-300 animate-slide-in ${
+                  index % 2 === 0 ? 'bg-muted/10' : 'bg-transparent'
+                }`}
+                style={{ animationDelay: `${index * 0.1}s` }}
+              >
+                {/* Rank */}
+                <div className="flex items-center justify-center">
+                  <span className={`text-2xl font-black ${getRankStyle(team.rank)}`}>
+                    #{team.rank}
+                  </span>
+                </div>
 
-              {/* Team */}
-              <div className="flex items-center gap-3">
-                <img 
-                  src={team.logo} 
-                  alt={`${team.name} logo`}
-                  className="w-12 h-12 rounded-full object-cover ring-2 ring-primary/30"
-                />
-                <span className="text-2xl font-bold text-foreground tracking-wider">
-                  {team.name}
-                </span>
-              </div>
-
-              {/* Points */}
-              <div className="flex items-center justify-center">
-                <span className="text-3xl font-bold text-foreground">
-                  {team.points}
-                </span>
-              </div>
-
-              {/* Player Status Indicators */}
-              <div className="flex items-center justify-center gap-2">
-                {team.players.map((player) => (
-                  <PlayerStatusIndicator 
-                    key={player.id} 
-                    status={player.status} 
+                {/* Team - More Compact */}
+                <div className="flex items-center gap-2">
+                  <img 
+                    src={team.logo} 
+                    alt={`${team.name} logo`}
+                    className="w-8 h-8 rounded-full object-cover ring-2 ring-primary/30 transition-transform hover:scale-110"
                   />
-                ))}
-              </div>
+                  <span className="text-lg font-bold text-foreground tracking-wide">
+                    {team.name}
+                  </span>
+                </div>
 
-              {/* Eliminations */}
-              <div className="flex items-center justify-center">
-                <span className="text-3xl font-bold text-foreground">
-                  {team.eliminations}
-                </span>
-              </div>
+                {/* Points */}
+                <div className="flex items-center justify-center">
+                  <span className="text-xl font-bold text-foreground">
+                    {team.points}
+                  </span>
+                </div>
 
-              {/* Alive Count Display */}
-              <div className="flex items-center justify-center">
-                <span className="text-2xl font-bold text-gaming-alive">
-                  {team.aliveCount}
-                </span>
+                {/* Player Status Capsules */}
+                <div className="flex items-center justify-center gap-1">
+                  {team.players.map((player, idx) => (
+                    <PlayerStatusIndicator 
+                      key={player.id} 
+                      status={player.status} 
+                    />
+                  ))}
+                </div>
+
+                {/* Eliminations */}
+                <div className="flex items-center justify-center">
+                  <span className="text-xl font-bold text-gaming-dead">
+                    {team.eliminations}
+                  </span>
+                </div>
+
+                {/* Alive Count */}
+                <div className="flex items-center justify-center">
+                  <div className="bg-gaming-alive/20 px-3 py-1 rounded-full border border-gaming-alive/30">
+                    <span className="text-lg font-bold text-gaming-alive">
+                      {team.aliveCount}
+                    </span>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+
+          {/* Streaming Widget Footer */}
+          <div className="bg-gradient-to-r from-primary/10 to-gaming-alive/10 p-3">
+            <div className="flex justify-center gap-6 text-xs">
+              <div className="flex items-center gap-1">
+                <PlayerStatusIndicator status="alive" />
+                <span className="text-muted-foreground font-medium">ALIVE</span>
+              </div>
+              <div className="flex items-center gap-1">
+                <PlayerStatusIndicator status="dead" />
+                <span className="text-muted-foreground font-medium">ELIMINATED</span>
+              </div>
+              <div className="flex items-center gap-1">
+                <PlayerStatusIndicator status="missing" />
+                <span className="text-muted-foreground font-medium">MISSING</span>
               </div>
             </div>
-          ))}
-        </Card>
+          </div>
+        </div>
 
-        {/* Legend */}
-        <div className="mt-8 flex justify-center gap-8">
-          <div className="flex items-center gap-2">
-            <PlayerStatusIndicator status="alive" />
-            <span className="text-sm font-medium text-muted-foreground">Alive</span>
-          </div>
-          <div className="flex items-center gap-2">
-            <PlayerStatusIndicator status="dead" />
-            <span className="text-sm font-medium text-muted-foreground">Dead</span>
-          </div>
-          <div className="flex items-center gap-2">
-            <PlayerStatusIndicator status="missing" />
-            <span className="text-sm font-medium text-muted-foreground">Missing</span>
+        {/* Live Indicator */}
+        <div className="mt-4 flex justify-center">
+          <div className="flex items-center gap-2 bg-gaming-dead/20 px-4 py-2 rounded-full border border-gaming-dead/30">
+            <div className="w-2 h-2 bg-gaming-dead rounded-full animate-pulse-glow"></div>
+            <span className="text-sm font-bold text-gaming-dead">LIVE</span>
           </div>
         </div>
       </div>
